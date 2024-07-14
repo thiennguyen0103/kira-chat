@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
+import { getSession } from "next-auth/react";
 import queryString from "query-string";
 import axiosInstance from "./axios.config";
-import { getSession } from "next-auth/react";
 
 export default class ApiClient {
   static async get<T>(url: string, params?: object): Promise<AxiosResponse<T>> {
@@ -18,7 +18,7 @@ export default class ApiClient {
     params?: object,
   ): Promise<AxiosResponse<T>> {
     const requestUrl = params ? `${url}?${queryString.stringify(params)}` : url;
-    const response = await axiosInstance.post(requestUrl, data, {
+    const response = axiosInstance.post(requestUrl, data, {
       headers: await this.getHeaders(),
     });
     return response;
@@ -30,7 +30,7 @@ export default class ApiClient {
     params?: object,
   ): Promise<AxiosResponse> {
     const requestUrl = params ? `${url}?${queryString.stringify(params)}` : url;
-    const response = await axiosInstance.put(requestUrl, data, {
+    const response = axiosInstance.put(requestUrl, data, {
       headers: await this.getHeaders(),
     });
     return response;
@@ -42,7 +42,7 @@ export default class ApiClient {
     params?: object,
   ): Promise<AxiosResponse> {
     const requestUrl = params ? `${url}?${queryString.stringify(params)}` : url;
-    const response = await axiosInstance.patch(requestUrl, data, {
+    const response = axiosInstance.patch(requestUrl, data, {
       headers: await this.getHeaders(),
     });
     return response;
@@ -50,7 +50,7 @@ export default class ApiClient {
 
   static async delete(url: string, params?: object): Promise<AxiosResponse> {
     const requestUrl = params ? `${url}?${queryString.stringify(params)}` : url;
-    const response = await axiosInstance.delete(requestUrl, {
+    const response = axiosInstance.delete(requestUrl, {
       headers: await this.getHeaders(),
     });
     return response;
@@ -63,7 +63,7 @@ export default class ApiClient {
   ): Promise<AxiosResponse> {
     const formData = new FormData();
     formData.append(fileKey, file);
-    const response = await axiosInstance.post(url, formData, {
+    const response = axiosInstance.post(url, formData, {
       headers: await this.getHeaders("multipart/form-data"),
     });
     return response;

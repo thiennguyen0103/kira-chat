@@ -100,6 +100,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               type="password"
               className={cn(iconSrc && "pl-9")}
               disabled={isLoading}
+              autoComplete="on"
             />
           </FormControl>
         </div>

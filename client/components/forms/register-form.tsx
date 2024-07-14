@@ -1,11 +1,11 @@
 "use client";
 
-import { ILoginPayload } from "@/@types/auth";
-import { LoginFormValues } from "@/constants/form-values";
-import { LoginFormValidation } from "@/lib/validation";
+import { IRegisterPayload } from "@/@types/auth";
+import { RegisterFormValues } from "@/constants/form-values";
+import { RegisterFormValidation } from "@/lib/validation";
+import { authService } from "@/services/auth.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -23,31 +23,27 @@ import {
 import { Form } from "../ui/form";
 import { ToastAction } from "../ui/toast";
 import { useToast } from "../ui/use-toast";
-const LoginForm = () => {
+const RegisterForm = () => {
   const { toast } = useToast();
   const router = useRouter();
-  const form = useForm<z.infer<typeof LoginFormValidation>>({
-    resolver: zodResolver(LoginFormValidation),
+  const form = useForm<z.infer<typeof RegisterFormValidation>>({
+    resolver: zodResolver(RegisterFormValidation),
     defaultValues: {
-      ...LoginFormValues,
+      ...RegisterFormValues,
     },
   });
 
-  const { mutate: login, isPending: isLoading } = useMutation({
+  const { mutate: register, isPending: isLoading } = useMutation({
     mutationKey: ["register"],
-    mutationFn: async (values: ILoginPayload) => {
-      await signIn("credentials", {
-        email: values.email,
-        password: values.password,
-        redirect: false,
-      });
+    mutationFn: async (values: IRegisterPayload) => {
+      await authService.register(values);
     },
     onSuccess: () => {
       toast({
         title: "Success",
-        description: "Login successfully",
+        description: "Register new account successfully",
       });
-      router.push("/");
+      router.push("/login");
     },
     onError: () => {
       toast({
@@ -59,8 +55,13 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginFormValidation>) => {
-    login(values);
+  const onSubmit = (values: z.infer<typeof RegisterFormValidation>) => {
+    register({
+      lastName: values.lastName,
+      firstName: values.firstName,
+      email: values.email,
+      password: values.password,
+    });
   };
 
   return (
@@ -68,12 +69,30 @@ const LoginForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardHeader>
-            <CardTitle>Login</CardTitle>
+            <CardTitle>Create an account</CardTitle>
             <CardDescription>
-              Please enter your username and password to login.
+              Enter your email below to create your account
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <CustomFormField
+                fieldType={FormFieldType.INPUT}
+                control={form.control}
+                name="firstName"
+                label="First Name"
+                placeholder="First name"
+                isLoading={isLoading}
+              />
+              <CustomFormField
+                fieldType={FormFieldType.INPUT}
+                control={form.control}
+                name="lastName"
+                label="Last Name"
+                placeholder="Last name"
+                isLoading={isLoading}
+              />
+            </div>
             <CustomFormField
               fieldType={FormFieldType.INPUT}
               control={form.control}
@@ -94,6 +113,16 @@ const LoginForm = () => {
               iconAlt="password"
               isLoading={isLoading}
             />
+            <CustomFormField
+              fieldType={FormFieldType.PASSWORD_INPUT}
+              control={form.control}
+              label="Confirm Password"
+              name="confirmPassword"
+              placeholder="Enter your password..."
+              iconSrc="/assets/icons/password.svg"
+              iconAlt="password"
+              isLoading={isLoading}
+            />
           </CardContent>
           <CardFooter className="flex-col space-y-2">
             <ButtonSubmit
@@ -101,15 +130,15 @@ const LoginForm = () => {
               type="submit"
               className="w-full"
             >
-              Login
+              Register
             </ButtonSubmit>
             <div>
-              <span>Don&apos;t have an account?</span>{" "}
+              <span>Already have an account?</span>{" "}
               <Link
-                href="/register"
+                href="/login"
                 className="font-medium hover:text-primary hover:underline"
               >
-                Sign up
+                Sign in
               </Link>
             </div>
           </CardFooter>
@@ -119,4 +148,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;

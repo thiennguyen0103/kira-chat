@@ -3,7 +3,7 @@ import ApiClient from "@/configs/api-client";
 
 export const authService = {
   login: async (payload: ILoginPayload) => {
-    const response = await ApiClient.post<IAuthResponse>(
+    const response = ApiClient.post<IAuthResponse>(
       "/v1/auth/email/login",
       payload,
     );
@@ -11,7 +11,7 @@ export const authService = {
     return response;
   },
   register: async (payload: IRegisterPayload) => {
-    const response = await ApiClient.post<IAuthResponse>(
+    const response = ApiClient.post<IAuthResponse>(
       "/v1/auth/email/register",
       payload,
     );
