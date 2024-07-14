@@ -1,4 +1,6 @@
+import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
+import AuthProvider from "@/providers/auth-provider";
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
@@ -28,7 +30,8 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
+        <Toaster />
       </body>
     </html>
   );
