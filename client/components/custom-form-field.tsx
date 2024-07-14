@@ -17,6 +17,7 @@ import { Textarea } from "./ui/textarea";
 export enum FormFieldType {
   INPUT = "input",
   TEXTAREA = "textarea",
+  PASSWORD_INPUT = "passwordInput",
   // PHONE_INPUT = "phoneInput",
   CHECKBOX = "checkbox",
   DATE_PICKER = "datePicker",
@@ -25,6 +26,7 @@ export enum FormFieldType {
 }
 
 interface CustomProps {
+  isLoading?: boolean;
   control: Control<any>;
   name: string;
   label?: string;
@@ -41,6 +43,7 @@ interface CustomProps {
 
 const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
   const {
+    isLoading,
     control,
     fieldType,
     name,
@@ -73,6 +76,30 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               placeholder={placeholder}
               {...field}
               className={cn(iconSrc && "pl-9")}
+              disabled={isLoading}
+            />
+          </FormControl>
+        </div>
+      );
+    case FormFieldType.PASSWORD_INPUT:
+      return (
+        <div className="relative">
+          {iconSrc && (
+            <Image
+              src={iconSrc}
+              height={20}
+              width={20}
+              alt={iconAlt || "icon"}
+              className="absolute left-2 top-1/2 -translate-y-1/2"
+            />
+          )}
+          <FormControl>
+            <Input
+              placeholder={placeholder}
+              {...field}
+              type="password"
+              className={cn(iconSrc && "pl-9")}
+              disabled={isLoading}
             />
           </FormControl>
         </div>
@@ -110,10 +137,9 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               id={name}
               checked={field.value}
               onCheckedChange={field.onChange}
+              disabled={isLoading}
             />
-            <label htmlFor={name} className="checkbox-label">
-              {label}
-            </label>
+            <label htmlFor={name}>{label}</label>
           </div>
         </FormControl>
       );
@@ -135,6 +161,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               timeInputLabel="Time:"
               dateFormat={dateFormat ?? "MM/dd/yyyy"}
               wrapperClassName="date-picker"
+              disabled={isLoading}
             />
           </FormControl>
         </div>
@@ -142,7 +169,11 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
     case FormFieldType.SELECT:
       return (
         <FormControl>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <Select
+            onValueChange={field.onChange}
+            defaultValue={field.value}
+            disabled={isLoading}
+          >
             <FormControl>
               <SelectTrigger className="shad-select-trigger">
                 <SelectValue placeholder={placeholder} />
