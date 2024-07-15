@@ -4,9 +4,11 @@ import AuthProvider from "@/providers/auth-provider";
 import TanstackQueryProvider from "@/providers/tanstack-query-provider";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
+import Loading from "./loading";
 
-const fontSans = Poppins ({
+const fontSans = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
   weight: ["300", "400", "500", "700"],
@@ -32,10 +34,12 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <TanstackQueryProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </TanstackQueryProvider>
-        <Toaster />
+        <Suspense fallback={<Loading />}>
+          <TanstackQueryProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </TanstackQueryProvider>
+          <Toaster />
+        </Suspense>
       </body>
     </html>
   );
