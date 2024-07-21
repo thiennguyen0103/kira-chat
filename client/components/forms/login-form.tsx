@@ -34,7 +34,7 @@ const LoginForm = () => {
   });
 
   const { mutate: login, isPending: isLoading } = useMutation({
-    mutationKey: ["register"],
+    mutationKey: ["login"],
     mutationFn: async (values: ILoginPayload) => {
       await signIn("credentials", {
         email: values.email,

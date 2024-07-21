@@ -1,4 +1,4 @@
-import LottiePlayer from "@/components/lotties/lottie-player";
+import LottiePlayer from "@/components/lottie-player";
 
 const Loading = () => {
   return (

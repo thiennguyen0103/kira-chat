@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { DotLottiePlayer } from "@dotlottie/react-player";
 import "@dotlottie/react-player/dist/index.css";
 import React, { useMemo, useRef } from "react";
-export type StatusType = "loading";
+export type StatusType = "loading" | "conversation";
 export interface StatusImgProps {
   status: StatusType;
   size?: "xs" | "sm" | "md" | "lg" | "xxs" | "xl" | "xxl" | "full-screen";
@@ -22,6 +22,8 @@ const StatusImg: React.FC<StatusImgProps> = ({
     switch (status) {
       case "loading":
         return "/assets/lotties/loading.lottie";
+      case "conversation":
+        return "/assets/lotties/conversation.lottie";
       default: {
         return "/assets/lotties/loading.lottie";
       }
@@ -51,21 +53,6 @@ const StatusImg: React.FC<StatusImgProps> = ({
     }
   }, [size]);
 
-  // useEffect(() => {
-  //   const instance = Lottie.loadAnimation({
-  //     container: loadingRef.current as HTMLElement, // Required
-  //     animationData: RenderStatus?.json,
-  //     renderer: "svg", // Required
-  //     loop: status === "loading" ? true : false, // Optional
-  //     autoplay: true, // Optional
-  //     name: status, // Name for future reference. Optional.
-  //   });
-
-  //   return () => {
-  //     instance.destroy();
-  //   };
-  // }, [status, RenderStatus]);
-
   return (
     <div
       className={cn(`flex items-center justify-center`, className)}
@@ -74,11 +61,6 @@ const StatusImg: React.FC<StatusImgProps> = ({
       }}
     >
       <DotLottiePlayer src={lottieFile} autoplay loop />
-      {/* <div
-        ref={loadingRef}
-        style={{ width: "100%", height: "100%" }}
-        key={status}
-      /> */}
     </div>
   );
 };
